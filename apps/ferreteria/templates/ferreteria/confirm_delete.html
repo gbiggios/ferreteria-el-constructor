@@ -1,0 +1,28 @@
+{% extends 'ferreteria/fragments/base.html' %}
+{% load ferreteria_extras %}
+
+{% block title %}Dar de baja - El Constructor{% endblock %}
+
+{% block main-content %}
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{{ producto.get_detail_url }}">{{ producto.nombre }}</a> › Dar de baja</div>
+
+    <div class="tarjeta confirmacion" style="margin-top: 18px;">
+        <span class="confirmacion-icono">{% include 'ferreteria/fragments/icono.html' with nombre='alerta' %}</span>
+        <h1 class="titulo-pagina" style="font-size: 24px;">¿Dar de baja este insumo?</h1>
+        <p class="bajada" style="margin-bottom: 0;">Se eliminará del catálogo y de la base de datos. Esta acción no se puede deshacer.</p>
+
+        <div class="resumen">
+            <div><span>SKU</span><strong>{{ producto.codigo }}</strong></div>
+            <div><span>Nombre</span><strong>{{ producto.nombre }}</strong></div>
+            <div><span>Familia</span><strong>{{ producto.categoria.nombre }}</strong></div>
+            <div><span>Stock actual</span><strong>{{ producto.stock }} {{ producto.unidad_medida }}</strong></div>
+            <div><span>Precio</span><strong>{{ producto.precio|clp }}</strong></div>
+        </div>
+
+        <form method="post" style="display: flex; gap: 10px; justify-content: center;">
+            {% csrf_token %}
+            <a class="boton boton-borde" href="{{ producto.get_detail_url }}">Cancelar</a>
+            <button class="boton boton-rojo" type="submit">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}Sí, dar de baja</button>
+        </form>
+    </div>
+{% endblock %}

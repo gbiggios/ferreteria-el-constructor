@@ -1,0 +1,69 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}El Constructor - Inventario{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=2">
+</head>
+<body>
+    <div class="barra-top">
+        <div class="contenedor">
+            <span>Sistema interno de inventario · Mesón y bodega</span>
+            {% if request.user.is_authenticated %}
+                <span><a href="/admin/">Panel de administración</a> · <a href="{% url 'ferreteria:log-out' %}">Cerrar sesión</a></span>
+            {% else %}
+                <span>Lunes a sábado, 9:00 a 18:00</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <header class="cabecera">
+        <div class="contenedor">
+            <a class="marca" href="{% if request.user.is_authenticated %}{% url 'ferreteria:home' %}{% else %}{% url 'ferreteria:log-in' %}{% endif %}">
+                <span class="marca-icono">{% include 'ferreteria/fragments/icono.html' with nombre='martillo' %}</span>
+                <span>
+                    <span class="marca-nombre">El Constructor</span><br>
+                    <span class="marca-sub">Ferretería y materiales</span>
+                </span>
+            </a>
+            {% if request.user.is_authenticated %}
+                <form class="buscador" method="get" action="{% url 'ferreteria:home' %}">
+                    <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Buscar por SKU, nombre o especificación" aria-label="Buscar insumo">
+                    <button type="submit" aria-label="Buscar">{% include 'ferreteria/fragments/icono.html' with nombre='buscar' %}</button>
+                </form>
+                <div class="usuario">Personal<strong>{{ request.user.username }}</strong></div>
+                <a class="boton boton-rojo" href="{% url 'ferreteria:producto-create' %}">{% include 'ferreteria/fragments/icono.html' with nombre='mas' %}Nuevo insumo</a>
+            {% endif %}
+        </div>
+    </header>
+
+    {% if request.user.is_authenticated %}
+        <nav class="menu">
+            <div class="contenedor">
+                <a class="menu-familias" href="{% url 'ferreteria:category-list' %}">{% include 'ferreteria/fragments/icono.html' with nombre='menu' %}Todas las familias</a>
+                {% with url=request.resolver_match.url_name %}
+                    <a href="{% url 'ferreteria:home' %}" class="{% if url == 'home' %}activo{% endif %}">Catálogo y stock</a>
+                    <a href="{% url 'ferreteria:producto-create' %}" class="{% if url == 'producto-create' %}activo{% endif %}">Registrar insumo</a>
+                    <a href="{% url 'ferreteria:category-list' %}" class="{% if url == 'category-list' %}activo{% endif %}">Familias</a>
+                {% endwith %}
+            </div>
+        </nav>
+    {% endif %}
+
+    <main>
+        <div class="contenedor">
+            {% block main-content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="pie">
+        <div class="contenedor">
+            <div><strong>El Constructor</strong>Ferretería y materiales de construcción</div>
+            <div class="derecha">Sistema de inventario · Incremento 1<br>Grupo 6 · APTC106 Taller de Desarrollo Web y Móvil</div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+{% extends 'ferreteria/fragments/base.html' %}
+{% load ferreteria_extras %}
+
+{% block title %}Catálogo y stock - El Constructor{% endblock %}
+
+{% block main-content %}
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › Catálogo y stock</div>
+    <h1 class="titulo-pagina">Catálogo y stock</h1>
+    <p class="bajada">Insumos registrados con su precio, ubicación en bodega y disponibilidad.</p>
+
+    <div class="indicadores">
+        <div class="indicador">
+            <span class="indicador-icono tono-neutro">{% include 'ferreteria/fragments/icono.html' with nombre='caja' %}</span>
+            <div><div class="indicador-valor">{{ total_items }}</div><div class="indicador-texto">Insumos en el listado</div></div>
+        </div>
+        <div class="indicador">
+            <span class="indicador-icono tono-naranjo">{% include 'ferreteria/fragments/icono.html' with nombre='alerta' %}</span>
+            <div><div class="indicador-valor">{{ items_criticos }}</div><div class="indicador-texto">Con stock crítico (10 o menos)</div></div>
+        </div>
+        <div class="indicador">
+            <span class="indicador-icono tono-rojo">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}</span>
+            <div><div class="indicador-valor">{{ items_agotados }}</div><div class="indicador-texto">Agotados en bodega</div></div>
+        </div>
+    </div>
+
+    <div class="pastillas">
+        <a class="pastilla {% if not categoria_seleccionada %}activa{% endif %}" href="{% url 'ferreteria:home' %}{% if query %}?q={{ query|urlencode }}{% endif %}">Todas las familias</a>
+        {% for cat in categorias %}
+            <a class="pastilla {% if categoria_seleccionada == cat.id %}activa{% endif %}"
+               href="?categoria={{ cat.id }}{% if query %}&q={{ query|urlencode }}{% endif %}">{{ cat.nombre }} ({{ cat.total_prod }})</a>
+        {% endfor %}
+    </div>
+
+    <div class="tarjeta">
+        <div class="tabla-cabecera">
+            <div>
+                <h2>Inventario</h2>
+                <p class="nota" style="margin: 0;">
+                    {% if query %}Resultados para "{{ query }}" · <a href="{% url 'ferreteria:home' %}" style="color: var(--rojo);">Limpiar búsqueda</a>{% else %}Ordenado por última actualización{% endif %}
+                </p>
+            </div>
+            <a class="boton boton-borde" href="{% url 'ferreteria:producto-create' %}">{% include 'ferreteria/fragments/icono.html' with nombre='mas' %}Registrar insumo</a>
+        </div>
+
+        {% if not productos %}
+            <div class="tabla-vacia">
+                <p>No se encontraron insumos con ese criterio.</p>
+                <a class="boton boton-rojo" href="{% url 'ferreteria:producto-create' %}">Registrar un insumo</a>
+            </div>
+        {% else %}
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Familia</th>
+                            <th>Ubicación</th>
+                            <th class="num">Precio</th>
+                            <th>Disponibilidad</th>
+                            <th class="num">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in productos %}
+                            <tr>
+                                <td>
+                                    <div class="producto-celda">
+                                        {% if p.imagen %}<img class="miniatura" src="{{ p.imagen.url }}" alt="{{ p.nombre }}" width="48" height="48" loading="lazy">{% else %}<span class="miniatura miniatura-vacia">{% include 'ferreteria/fragments/icono.html' with nombre='caja' %}</span>{% endif %}
+                                        <div>
+                                            <div class="producto-nombre">{{ p.nombre }}</div>
+                                            <div class="producto-meta">{{ p.codigo }} · {{ p.unidad_medida }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="etiqueta-familia">{{ p.categoria.nombre }}</span></td>
+                                <td class="producto-meta">{{ p.ubicacion_bodega }}</td>
+                                <td class="num"><strong>{{ p.precio|clp }}</strong></td>
+                                <td>
+                                    {% if p.stock <= 0 %}
+                                        <span class="stock stock-agotado">Agotado</span>
+                                    {% elif p.stock <= 10 %}
+                                        <span class="stock stock-critico">{{ p.stock }} en stock</span>
+                                    {% else %}
+                                        <span class="stock stock-ok">{{ p.stock }} en stock</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="acciones">
+                                        <a class="accion" href="{{ p.get_detail_url }}" title="Ver ficha">{% include 'ferreteria/fragments/icono.html' with nombre='ver' %}</a>
+                                        <a class="accion" href="{{ p.get_edit_url }}" title="Editar o ajustar stock">{% include 'ferreteria/fragments/icono.html' with nombre='editar' %}</a>
+                                        <a class="accion accion-peligro" href="{{ p.get_delete_url }}" title="Dar de baja">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% load widget_tweaks %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+        <div class="alerta">{{ form.non_field_errors|join:" " }}</div>
+    {% endif %}
+
+    <div class="campos">
+        {% for field in form %}
+            {% if field.field.widget.input_type == 'checkbox' %}
+                <div class="campo campo-check campo-ancho">
+                    {% render_field field %}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                </div>
+            {% elif field.name == 'imagen' %}
+                {# Se arma a mano el ClearableFileInput: miniatura actual, selector y casilla "-clear" que Django espera #}
+                <div class="campo campo-ancho{% if field.errors %} campo-error{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    <div class="campo-imagen">
+                        {% if form.instance.imagen %}
+                            <img class="miniatura miniatura-grande" src="{{ form.instance.imagen.url }}" alt="Imagen actual" width="88" height="88">
+                        {% else %}
+                            <span class="miniatura miniatura-grande miniatura-vacia">{% include 'ferreteria/fragments/icono.html' with nombre='caja' %}</span>
+                        {% endif %}
+                        <div>
+                            <input type="file" name="{{ field.html_name }}" id="{{ field.id_for_label }}" accept="image/*">
+                            {% if form.instance.imagen %}
+                                <div class="campo-check" style="display: flex; margin-top: 8px;">
+                                    <input type="checkbox" name="{{ field.html_name }}-clear" id="{{ field.html_name }}-clear_id">
+                                    <label for="{{ field.html_name }}-clear_id">Quitar la imagen actual</label>
+                                </div>
+                            {% else %}
+                                <span class="ayuda">JPG o PNG. Opcional.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% for error in field.errors %}<span class="error">{{ error }}</span>{% endfor %}
+                </div>
+            {% else %}
+                <div class="campo{% if field.name == 'nombre' or field.name == 'descripcion' %} campo-ancho{% endif %}{% if field.errors %} campo-error{% endif %}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {% render_field field %}
+                    {% if field.help_text %}<span class="ayuda">{{ field.help_text }}</span>{% endif %}
+                    {% for error in field.errors %}<span class="error">{{ error }}</span>{% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="pie-formulario">
+        <a class="boton boton-suave" href="{% url 'ferreteria:home' %}">Cancelar</a>
+        <button class="boton boton-rojo" type="submit">Guardar insumo</button>
+    </div>
+</form>

@@ -1,0 +1,46 @@
+{% extends 'ferreteria/fragments/base.html' %}
+{% load ferreteria_extras %}
+
+{% block title %}{{ producto.nombre }} - El Constructor{% endblock %}
+
+{% block main-content %}
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{% url 'ferreteria:home' %}?categoria={{ producto.categoria_id }}">{{ producto.categoria.nombre }}</a> › Ficha técnica</div>
+    <h1 class="titulo-pagina">{{ producto.nombre }}</h1>
+    <p class="bajada">SKU {{ producto.codigo }} · {{ producto.unidad_medida }}</p>
+
+    <div class="columnas-7-5">
+        <div class="tarjeta">
+            {% if producto.imagen %}<img class="foto-producto" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">{% endif %}
+            <span class="etiqueta-familia">{{ producto.categoria.nombre }}</span>
+            <div class="ficha-datos">
+                <div><div class="dato-etiqueta">Ubicación en bodega</div><div class="dato-valor">{{ producto.ubicacion_bodega }}</div></div>
+                <div><div class="dato-etiqueta">Venta</div><div class="dato-valor">{% if producto.disponible %}Habilitado para mesón{% else %}Deshabilitado{% endif %}</div></div>
+                <div><div class="dato-etiqueta">Fecha de registro</div><div class="dato-valor">{{ producto.created|date:"d/m/Y H:i" }}</div></div>
+                <div><div class="dato-etiqueta">Última actualización</div><div class="dato-valor">{{ producto.updated|date:"d/m/Y H:i" }}</div></div>
+            </div>
+            <div class="dato-etiqueta" style="margin-bottom: 6px;">Descripción y especificaciones</div>
+            <div class="descripcion">{{ producto.descripcion|linebreaksbr }}</div>
+        </div>
+
+        <div class="tarjeta">
+            <div class="dato-etiqueta">Stock actual</div>
+            <div class="stock-grande">{{ producto.stock }}</div>
+            <div class="producto-meta">{{ producto.unidad_medida }}</div>
+            <div style="margin-top: 10px;">
+                {% if producto.stock <= 0 %}
+                    <span class="stock stock-agotado">Agotado</span>
+                {% elif producto.stock <= 10 %}
+                    <span class="stock stock-critico">Stock crítico</span>
+                {% else %}
+                    <span class="stock stock-ok">Disponible</span>
+                {% endif %}
+            </div>
+            <hr class="separador">
+            <div class="dato-etiqueta">Precio de venta (IVA incluido)</div>
+            <div class="precio-grande">{{ producto.precio|clp }}</div>
+            <hr class="separador">
+            <a class="boton boton-rojo boton-ancho" href="{{ producto.get_edit_url }}">{% include 'ferreteria/fragments/icono.html' with nombre='editar' %}Editar o ajustar stock</a>
+            <a class="boton boton-borde boton-ancho" href="{{ producto.get_delete_url }}" style="margin-top: 10px;">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}Dar de baja</a>
+        </div>
+    </div>
+{% endblock %}

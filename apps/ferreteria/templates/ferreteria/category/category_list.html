@@ -1,0 +1,49 @@
+{% extends 'ferreteria/fragments/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Familias - El Constructor{% endblock %}
+
+{% block main-content %}
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › Familias</div>
+    <h1 class="titulo-pagina">Familias de productos</h1>
+    <p class="bajada">Clasificación del catálogo para buscar y filtrar insumos en el mesón.</p>
+
+    <div class="columnas-7-5">
+        <div class="tarjeta">
+            <table class="tabla">
+                <thead>
+                    <tr><th>Familia</th><th>Descripción</th><th class="num">Insumos</th></tr>
+                </thead>
+                <tbody>
+                    {% for c in categorias %}
+                        <tr>
+                            <td class="producto-nombre">{{ c.nombre }}</td>
+                            <td class="producto-meta">{{ c.descripcion|default:"Sin descripción" }}</td>
+                            <td class="num"><a class="pastilla" href="{% url 'ferreteria:home' %}?categoria={{ c.id }}">{{ c.total_prod }} insumo{{ c.total_prod|pluralize }}</a></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3" class="tabla-vacia">No hay familias registradas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tarjeta">
+            <h2>Nueva familia</h2>
+            <p class="nota">El nombre no puede repetirse.</p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="campo{% if form.nombre.errors %} campo-error{% endif %}">
+                    <label for="id_cat_nombre">Nombre</label>
+                    {% render_field form.nombre id="id_cat_nombre" placeholder="Ej: Gasfitería" %}
+                    {% for error in form.nombre.errors %}<span class="error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="campo" style="margin-top: 14px;">
+                    <label for="id_cat_desc">Descripción breve</label>
+                    {% render_field form.descripcion id="id_cat_desc" %}
+                </div>
+                <button class="boton boton-rojo boton-ancho" type="submit" style="margin-top: 18px;">Registrar familia</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

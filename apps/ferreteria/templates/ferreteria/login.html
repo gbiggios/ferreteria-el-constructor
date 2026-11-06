@@ -1,0 +1,55 @@
+{% extends 'ferreteria/fragments/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Iniciar sesión - El Constructor{% endblock %}
+
+{% block main-content %}
+    <div class="migas">Inicio › Acceso del personal</div>
+    <h1 class="titulo-pagina">Bienvenido a El Constructor</h1>
+    <p class="bajada">Ingresa con tu cuenta para revisar el stock, registrar insumos y ajustar existencias.</p>
+
+    <div class="dos-columnas">
+        <div class="tarjeta">
+            <div class="pestanas"><div class="pestana">Iniciar sesión</div></div>
+
+            {% if message %}
+                <div class="alerta">{{ message }}</div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="campo">
+                    <label for="id_username">Usuario</label>
+                    {% render_field form.username id="id_username" autocomplete="username" placeholder="Ej: vendedor01" %}
+                </div>
+                <div class="campo" style="margin-top: 14px;">
+                    <label for="id_password">Contraseña</label>
+                    {% render_field form.password id="id_password" autocomplete="current-password" %}
+                </div>
+                <button class="boton boton-rojo boton-ancho" type="submit" style="margin-top: 20px;">Ingresar</button>
+            </form>
+
+            <div class="caja-info">
+                <strong>¿Trabajas en la ferretería?</strong> Ingresa con el usuario que te entregó el administrador.
+                Si olvidaste tu contraseña, pídele que la restablezca desde el panel de administración.
+            </div>
+        </div>
+
+        <div class="tarjeta">
+            <h2>¿Qué puedes hacer en el sistema?</h2>
+            <p class="nota">Primer incremento del sistema de inventario de la ferretería.</p>
+            <div class="ventaja">
+                <span class="ventaja-icono">{% include 'ferreteria/fragments/icono.html' with nombre='check' %}</span>
+                <div><strong>Stock al día</strong><span>Consulta disponibilidad, precio y ubicación en bodega de cada insumo.</span></div>
+            </div>
+            <div class="ventaja">
+                <span class="ventaja-icono">{% include 'ferreteria/fragments/icono.html' with nombre='caja' %}</span>
+                <div><strong>Alta y ajuste de insumos</strong><span>Registra productos nuevos y corrige el stock después de una recepción o un conteo.</span></div>
+            </div>
+            <div class="ventaja">
+                <span class="ventaja-icono">{% include 'ferreteria/fragments/icono.html' with nombre='etiqueta' %}</span>
+                <div><strong>Familias de productos</strong><span>Organiza el catálogo por familia para encontrar cada insumo en el mesón.</span></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
