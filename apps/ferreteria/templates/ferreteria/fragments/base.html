@@ -6,7 +6,7 @@
     <title>{% block title %}El Constructor - Inventario{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=5">
 </head>
 <body>
     <div class="barra-top">
@@ -52,6 +52,20 @@
         </nav>
     {% endif %}
 
+    {% if messages %}
+        {# Mensajes del framework messages como avisos flotantes (toast). Éxito/info se cierran a los 5 s; los errores, solo con la X #}
+        <div class="mensajes">
+            {% for message in messages %}
+                <div class="mensaje mensaje-{{ message.tags }}" role="{% if 'error' in message.tags %}alert{% else %}status{% endif %}">
+                    {% if 'error' in message.tags %}{% include 'ferreteria/fragments/icono.html' with nombre='alerta' %}{% else %}{% include 'ferreteria/fragments/icono.html' with nombre='check' %}{% endif %}
+                    <span class="mensaje-texto">{{ message }}</span>
+                    <button type="button" class="mensaje-cerrar" aria-label="Cerrar mensaje">&times;</button>
+                    {% if 'error' not in message.tags %}<span class="mensaje-tiempo" aria-hidden="true"></span>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <main>
         <div class="contenedor">
             {% block main-content %}{% endblock %}
@@ -64,5 +78,7 @@
             <div class="derecha">Sistema de inventario · Incremento 1<br>Grupo 6 · APTC106 Taller de Desarrollo Web y Móvil</div>
         </div>
     </footer>
+
+    <script src="{% static 'ferreteria/js/mensajes.js' %}?v=1" defer></script>
 </body>
 </html>

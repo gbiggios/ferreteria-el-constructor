@@ -169,6 +169,28 @@ main { flex: 1 0 auto; }
 .error { color: var(--rojo); font-size: 12.5px; }
 .ayuda { color: var(--gris); font-size: 12.5px; }
 .alerta { background: var(--rojo-suave); color: var(--rojo-oscuro); border-radius: 6px; padding: 10px 14px; font-size: 14px; margin-bottom: 16px; }
+
+/* Mensajes de feedback (django.contrib.messages) como avisos flotantes. El cierre lo maneja js/mensajes.js */
+.mensajes { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; width: min(380px, calc(100vw - 32px)); }
+.mensaje { position: relative; overflow: hidden; display: flex; align-items: flex-start; gap: 10px; border: 1px solid; border-radius: var(--radio); padding: 12px 12px 15px 14px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); animation: mensaje-entrada 0.25s ease-out; }
+.mensaje svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+.mensaje-texto { flex: 1; }
+.mensaje-success { background: #dcfce7; border-color: #bbf7d0; color: var(--verde); }
+.mensaje-error { background: var(--rojo-suave); border-color: #fecaca; color: var(--rojo-oscuro); }
+.mensaje-info { background: #f1f5f9; border-color: var(--borde); color: var(--texto); }
+.mensaje-cerrar { background: none; border: 0; padding: 0 4px; color: inherit; font-size: 22px; line-height: 18px; cursor: pointer; opacity: 0.6; }
+.mensaje-cerrar:hover, .mensaje-cerrar:focus-visible { opacity: 1; }
+.mensaje-cerrar:focus-visible { outline: 2px solid currentColor; border-radius: 4px; }
+/* Barra de tiempo: al terminar (5 s) el JS cierra el aviso; con el mouse encima se pausa */
+.mensaje-tiempo { position: absolute; left: 0; bottom: 0; width: 100%; height: 3px; background: currentColor; opacity: 0.35; transform-origin: left; animation: mensaje-tiempo 5s linear forwards; }
+.mensaje:hover .mensaje-tiempo, .mensaje:focus-within .mensaje-tiempo { animation-play-state: paused; }
+.mensaje-saliendo { animation: mensaje-salida 0.2s ease-in forwards; }
+@keyframes mensaje-entrada { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes mensaje-salida { to { opacity: 0; transform: translateX(16px); } }
+@keyframes mensaje-tiempo { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) {
+    .mensaje, .mensaje-saliendo { animation-duration: 1ms; }
+}
 .pie-formulario { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--borde); }
 
 /* Login */

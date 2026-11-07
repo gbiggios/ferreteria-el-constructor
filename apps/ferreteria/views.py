@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,6 +16,7 @@ def log_in(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
+                messages.success(request, f'Bienvenido, {user.username}.')
                 return redirect('ferreteria:home')
             else:
                 context['message'] = 'El usuario ha sido desactivado en el sistema.'
@@ -26,6 +28,7 @@ def log_in(request):
 @login_required
 def log_out(request):
     logout(request)
+    messages.info(request, 'Sesión cerrada correctamente.')
     return redirect('ferreteria:log-in')
 
 
@@ -74,9 +77,12 @@ def producto_detail(request, pk):
 @login_required
 def producto_create(request):
     form = ProductoForm(request.POST or None, request.FILES or None)
-    if request.POST and form.is_valid():
-        nuevo_producto = form.save()
-        return redirect('ferreteria:home')
+    if request.POST:
+        if form.is_valid():
+            producto = form.save()
+            messages.success(request, f'Insumo "{producto.nombre}" ({producto.codigo}) registrado correctamente.')
+            return redirect('ferreteria:home')
+        messages.error(request, 'No se pudo registrar el insumo. Revisa los campos marcados en rojo.')
     return render(request, 'ferreteria/form.html', {
         'form': form,
         'titulo': 'Registrar insumo',
@@ -88,9 +94,12 @@ def producto_create(request):
 def producto_update(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     form = ProductoForm(request.POST or None, request.FILES or None, instance=producto)
-    if request.POST and form.is_valid():
-        form.save()
-        return redirect('ferreteria:home')
+    if request.POST:
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Insumo "{producto.nombre}" actualizado correctamente.')
+            return redirect('ferreteria:home')
+        messages.error(request, 'No se pudieron guardar los cambios. Revisa los campos marcados en rojo.')
     return render(request, 'ferreteria/form.html', {
         'form': form,
         'producto': producto,
@@ -104,6 +113,7 @@ def producto_delete(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     if request.method == 'POST':
         producto.delete()
+        messages.success(request, f'Insumo "{producto.nombre}" ({producto.codigo}) dado de baja.')
         return redirect('ferreteria:home')
     return render(request, 'ferreteria/confirm_delete.html', {'producto': producto})
 
@@ -112,9 +122,12 @@ def producto_delete(request, pk):
 def categoria_list(request):
     categorias = Categoria.objects.annotate(total_prod=Count('productos')).order_by('nombre')
     form = CategoriaForm(request.POST or None)
-    if request.POST and form.is_valid():
-        form.save()
-        return redirect('ferreteria:category-list')
+    if request.POST:
+        if form.is_valid():
+            categoria = form.save()
+            messages.success(request, f'Categoría "{categoria.nombre}" registrada correctamente.')
+            return redirect('ferreteria:category-list')
+        messages.error(request, 'No se pudo registrar la categoría. Revisa el formulario.')
     return render(request, 'ferreteria/category/category_list.html', {
         'categorias': categorias,
         'form': form
@@ -134,9 +147,12 @@ def categoria_detail(request, pk):
 def categoria_update(request, pk):
     categoria = get_object_or_404(Categoria, pk=pk)
     form = CategoriaForm(request.POST or None, instance=categoria)
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-        return redirect(categoria.get_detail_url())
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Categoría "{categoria.nombre}" actualizada correctamente.')
+            return redirect(categoria.get_detail_url())
+        messages.error(request, 'No se pudieron guardar los cambios. Revisa el formulario.')
     return render(request, 'ferreteria/category/category_form.html', {
         'form': form,
         'categoria': categoria,
@@ -146,15 +162,12 @@ def categoria_update(request, pk):
 @login_required
 def categoria_delete(request, pk):
     categoria = get_object_or_404(Categoria.objects.annotate(total_prod=Count('productos')), pk=pk)
-    error = None
     if request.method == 'POST':
         try:
             categoria.delete()
+            messages.success(request, f'Categoría "{categoria.nombre}" eliminada.')
             return redirect('ferreteria:category-list')
         except ProtectedError:
             # on_delete=PROTECT: una categoría con insumos no se puede borrar
-            error = 'No se puede eliminar: la categoría todavía tiene insumos asociados.'
-    return render(request, 'ferreteria/category/category_confirm_delete.html', {
-        'categoria': categoria,
-        'error': error,
-    })
+            messages.error(request, 'No se puede eliminar: la categoría todavía tiene insumos asociados.')
+    return render(request, 'ferreteria/category/category_confirm_delete.html', {'categoria': categoria})

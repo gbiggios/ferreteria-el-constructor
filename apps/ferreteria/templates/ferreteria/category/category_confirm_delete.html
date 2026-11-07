@@ -12,7 +12,7 @@
             {# on_delete=PROTECT: no se ofrece borrar una categoría que todavía tiene insumos #}
             <h1 class="titulo-pagina" style="font-size: 24px;">No se puede eliminar esta categoría</h1>
             <div class="alerta" style="margin-top: 14px;">
-                {% if error %}{{ error }} {% endif %}La categoría tiene {{ categoria.total_prod }} insumo{{ categoria.total_prod|pluralize }} asociado{{ categoria.total_prod|pluralize }}.
+                La categoría tiene {{ categoria.total_prod }} insumo{{ categoria.total_prod|pluralize }} asociado{{ categoria.total_prod|pluralize }}.
                 Muévelos a otra categoría o dalos de baja antes de eliminarla.
             </div>
             <div style="display: flex; gap: 10px; justify-content: center;">
