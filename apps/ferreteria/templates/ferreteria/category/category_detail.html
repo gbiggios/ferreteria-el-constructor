@@ -25,7 +25,7 @@
                                 <div class="producto-nombre"><a href="{{ p.get_detail_url }}">{{ p.nombre }}</a></div>
                                 <div class="producto-meta">{{ p.codigo }} · {{ p.unidad_medida }}</div>
                             </td>
-                            <td class="num">{{ p.stock }}</td>
+                            <td class="num">{% include 'ferreteria/fragments/estado_stock.html' with producto=p con_cantidad=True %}</td>
                             <td class="num">{{ p.precio|clp }}</td>
                         </tr>
                     {% empty %}

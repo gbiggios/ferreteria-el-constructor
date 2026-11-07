@@ -2,6 +2,10 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse_lazy
 
+# Regla de negocio del stock: con 0 unidades el insumo está agotado y con STOCK_CRITICO o menos, crítico.
+# Es el único lugar donde se define el umbral; lo usan Producto.estado_stock, ProductoQuerySet y las plantillas.
+STOCK_CRITICO = 10
+
 
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de registro')
@@ -33,6 +37,16 @@ class Categoria(BaseModel):
         return reverse_lazy('ferreteria:category-delete', kwargs={'pk': self.pk})
 
 
+class ProductoQuerySet(models.QuerySet):
+    """Filtros por estado de stock, en la base de datos. Misma regla que Producto.estado_stock."""
+
+    def agotados(self):
+        return self.filter(stock__lte=0)
+
+    def criticos(self):
+        return self.filter(stock__gt=0, stock__lte=STOCK_CRITICO)
+
+
 class Producto(BaseModel):
     UNIDADES_CHOICES = [
         ('Unidad', 'Unidad'),
@@ -55,6 +69,8 @@ class Producto(BaseModel):
     disponible = models.BooleanField(default=True, verbose_name='Disponible para Venta')
     imagen = models.ImageField(upload_to='productos/', blank=True, verbose_name='Imagen del producto')
 
+    objects = ProductoQuerySet.as_manager()
+
     class Meta:
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
@@ -74,8 +90,9 @@ class Producto(BaseModel):
 
     @property
     def estado_stock(self):
+        """'agotado', 'critico' o 'disponible'. Las plantillas lo usan vía fragments/estado_stock.html."""
         if self.stock <= 0:
-            return 'Agotado'
-        elif self.stock <= 10:
-            return 'Crítico'
-        return 'Disponible'
+            return 'agotado'
+        if self.stock <= STOCK_CRITICO:
+            return 'critico'
+        return 'disponible'

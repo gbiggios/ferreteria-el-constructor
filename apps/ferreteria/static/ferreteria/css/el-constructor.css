@@ -125,7 +125,7 @@ main { flex: 1 0 auto; }
 /* Disponibilidad */
 .stock { font-weight: 600; white-space: nowrap; }
 .stock::before { content: '●'; margin-right: 6px; }
-.stock-ok { color: var(--verde); }
+.stock-disponible { color: var(--verde); }
 .stock-critico { color: var(--naranjo); }
 .stock-agotado { color: var(--rojo); }
 

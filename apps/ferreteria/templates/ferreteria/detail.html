@@ -26,15 +26,7 @@
             <div class="dato-etiqueta">Stock actual</div>
             <div class="stock-grande">{{ producto.stock }}</div>
             <div class="producto-meta">{{ producto.unidad_medida }}</div>
-            <div style="margin-top: 10px;">
-                {% if producto.stock <= 0 %}
-                    <span class="stock stock-agotado">Agotado</span>
-                {% elif producto.stock <= 10 %}
-                    <span class="stock stock-critico">Stock crítico</span>
-                {% else %}
-                    <span class="stock stock-ok">Disponible</span>
-                {% endif %}
-            </div>
+            <div style="margin-top: 10px;">{% include 'ferreteria/fragments/estado_stock.html' %}</div>
             <hr class="separador">
             <div class="dato-etiqueta">Precio de venta (IVA incluido)</div>
             <div class="precio-grande">{{ producto.precio|clp }}</div>

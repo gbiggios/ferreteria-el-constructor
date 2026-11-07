@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q, Count, ProtectedError
-from .models import Producto, Categoria
+from .models import Producto, Categoria, STOCK_CRITICO
 from .forms import ProductoForm, LoginForm, CategoriaForm
 
 
@@ -52,8 +52,8 @@ def producto_list(request):
 
     # Métricas clave del inventario para la toma de decisiones
     total_items = productos.count()
-    items_agotados = productos.filter(stock__lte=0).count()
-    items_criticos = productos.filter(stock__gt=0, stock__lte=10).count()
+    items_agotados = productos.agotados().count()
+    items_criticos = productos.criticos().count()
 
     context = {
         'productos': productos,
@@ -63,6 +63,7 @@ def producto_list(request):
         'total_items': total_items,
         'items_agotados': items_agotados,
         'items_criticos': items_criticos,
+        'stock_critico': STOCK_CRITICO,
     }
     return render(request, 'ferreteria/index.html', context)
 

@@ -1,0 +1,6 @@
+{% comment %}
+Insignia de stock de un producto. La regla vive en Producto.estado_stock (models.py).
+Uso: {% include 'ferreteria/fragments/estado_stock.html' with producto=p con_cantidad=True %}
+  con_cantidad=True  -> "12 en stock" (listados)
+  sin con_cantidad   -> "Stock crítico" / "Disponible" (ficha, donde la cantidad ya se muestra aparte)
+{% endcomment %}{% with estado=producto.estado_stock %}<span class="stock stock-{{ estado }}">{% if estado == 'agotado' %}Agotado{% elif con_cantidad %}{{ producto.stock }} en stock{% elif estado == 'critico' %}Stock crítico{% else %}Disponible{% endif %}</span>{% endwith %}

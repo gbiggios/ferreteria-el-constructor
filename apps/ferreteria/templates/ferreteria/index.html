@@ -15,7 +15,7 @@
         </div>
         <div class="indicador">
             <span class="indicador-icono tono-naranjo">{% include 'ferreteria/fragments/icono.html' with nombre='alerta' %}</span>
-            <div><div class="indicador-valor">{{ items_criticos }}</div><div class="indicador-texto">Con stock crítico (10 o menos)</div></div>
+            <div><div class="indicador-valor">{{ items_criticos }}</div><div class="indicador-texto">Con stock crítico ({{ stock_critico }} o menos)</div></div>
         </div>
         <div class="indicador">
             <span class="indicador-icono tono-rojo">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}</span>
@@ -75,15 +75,7 @@
                                 <td><span class="etiqueta-categoria">{{ p.categoria.nombre }}</span></td>
                                 <td class="producto-meta">{{ p.ubicacion_bodega }}</td>
                                 <td class="num"><strong>{{ p.precio|clp }}</strong></td>
-                                <td>
-                                    {% if p.stock <= 0 %}
-                                        <span class="stock stock-agotado">Agotado</span>
-                                    {% elif p.stock <= 10 %}
-                                        <span class="stock stock-critico">{{ p.stock }} en stock</span>
-                                    {% else %}
-                                        <span class="stock stock-ok">{{ p.stock }} en stock</span>
-                                    {% endif %}
-                                </td>
+                                <td>{% include 'ferreteria/fragments/estado_stock.html' with producto=p con_cantidad=True %}</td>
                                 <td>
                                     <div class="acciones">
                                         <a class="accion" href="{{ p.get_detail_url }}" title="Ver ficha">{% include 'ferreteria/fragments/icono.html' with nombre='ver' %}</a>
