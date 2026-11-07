@@ -15,7 +15,7 @@ def log_in(request):
 
     form = LoginForm(request.POST or None)
     context = {'message': None, 'form': form}
-    if request.POST and form.is_valid():
+    if request.method == 'POST' and form.is_valid():
         user = authenticate(request, **form.cleaned_data)
         if user is not None:
             if user.is_active:
@@ -35,8 +35,10 @@ def log_in(request):
 
 
 def log_out(request):
-    # Sin @login_required: así /logout/ sin sesión no genera un ?next=/logout/ que cerraría la sesión al ingresar
-    if request.user.is_authenticated:
+    # Solo por POST (formulario con token CSRF): un enlace o imagen de otro sitio no puede cerrar la sesión.
+    # Un GET no cambia nada: redirige al login, que a su vez manda al catálogo si hay sesión.
+    # Sin @login_required: así /logout/ sin sesión no genera un ?next=/logout/.
+    if request.method == 'POST' and request.user.is_authenticated:
         logout(request)
         messages.info(request, 'Sesión cerrada correctamente.')
     return redirect('ferreteria:log-in')
@@ -88,7 +90,7 @@ def producto_detail(request, pk):
 @login_required
 def producto_create(request):
     form = ProductoForm(request.POST or None, request.FILES or None)
-    if request.POST:
+    if request.method == 'POST':
         if form.is_valid():
             producto = form.save()
             messages.success(request, f'Insumo "{producto.nombre}" ({producto.codigo}) registrado correctamente.')
@@ -105,7 +107,7 @@ def producto_create(request):
 def producto_update(request, pk):
     producto = get_object_or_404(Producto, pk=pk)
     form = ProductoForm(request.POST or None, request.FILES or None, instance=producto)
-    if request.POST:
+    if request.method == 'POST':
         if form.is_valid():
             form.save()
             messages.success(request, f'Insumo "{producto.nombre}" actualizado correctamente.')
@@ -133,7 +135,7 @@ def producto_delete(request, pk):
 def categoria_list(request):
     categorias = Categoria.objects.annotate(total_prod=Count('productos')).order_by('nombre')
     form = CategoriaForm(request.POST or None)
-    if request.POST:
+    if request.method == 'POST':
         if form.is_valid():
             categoria = form.save()
             messages.success(request, f'Categoría "{categoria.nombre}" registrada correctamente.')

@@ -35,7 +35,10 @@ main { flex: 1 0 auto; }
 /* Barra superior */
 .barra-top { background: var(--tinta); color: #e2e8f0; font-size: 13px; }
 .barra-top .contenedor { display: flex; justify-content: space-between; align-items: center; height: 34px; }
-.barra-top a:hover { color: var(--blanco); }
+.barra-top a:hover, .barra-top .boton-enlace:hover { color: var(--blanco); }
+/* Botón con aspecto de enlace (cerrar sesión va por POST, así que es un formulario y no un <a>) */
+.form-en-linea { display: inline; margin: 0; }
+.boton-enlace { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; }
 
 /* Cabecera */
 .cabecera { background: var(--blanco); border-bottom: 1px solid var(--borde); }

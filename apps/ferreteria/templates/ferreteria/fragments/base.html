@@ -6,14 +6,17 @@
     <title>{% block title %}El Constructor - Inventario{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=6">
+    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=7">
 </head>
 <body>
     <div class="barra-top">
         <div class="contenedor">
             <span>Sistema interno de inventario · Mesón y bodega</span>
             {% if request.user.is_authenticated %}
-                <span><a href="/admin/">Panel de administración</a> · <a href="{% url 'ferreteria:log-out' %}">Cerrar sesión</a></span>
+                <span>
+                    {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Panel de administración</a> · {% endif %}
+                    <form class="form-en-linea" method="post" action="{% url 'ferreteria:log-out' %}">{% csrf_token %}<button type="submit" class="boton-enlace">Cerrar sesión</button></form>
+                </span>
             {% else %}
                 <span>Lunes a sábado, 9:00 a 18:00</span>
             {% endif %}
