@@ -43,11 +43,10 @@
     {% if request.user.is_authenticated %}
         <nav class="menu">
             <div class="contenedor">
-                <a class="menu-categorias" href="{% url 'ferreteria:category-list' %}">{% include 'ferreteria/fragments/icono.html' with nombre='menu' %}Todas las categorías</a>
                 {% with url=request.resolver_match.url_name %}
+                    <a class="menu-categorias{% if 'category' in url %} activo{% endif %}" href="{% url 'ferreteria:category-list' %}">{% include 'ferreteria/fragments/icono.html' with nombre='menu' %}Todas las categorías</a>
                     <a href="{% url 'ferreteria:home' %}" class="{% if url == 'home' %}activo{% endif %}">Catálogo y stock</a>
                     <a href="{% url 'ferreteria:producto-create' %}" class="{% if url == 'producto-create' %}activo{% endif %}">Registrar insumo</a>
-                    <a href="{% url 'ferreteria:category-list' %}" class="{% if 'category' in url %}activo{% endif %}">Categorías</a>
                 {% endwith %}
             </div>
         </nav>
