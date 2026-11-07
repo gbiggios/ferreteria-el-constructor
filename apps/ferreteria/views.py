@@ -3,19 +3,29 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q, Count, ProtectedError
+from django.utils.http import url_has_allowed_host_and_scheme
 from .models import Producto, Categoria, STOCK_CRITICO
 from .forms import ProductoForm, LoginForm, CategoriaForm
 
 
 def log_in(request):
+    # Quien ya tiene sesión no necesita volver a ver el formulario
+    if request.user.is_authenticated:
+        return redirect('ferreteria:home')
+
     form = LoginForm(request.POST or None)
     context = {'message': None, 'form': form}
     if request.POST and form.is_valid():
-        user = authenticate(**form.cleaned_data)
+        user = authenticate(request, **form.cleaned_data)
         if user is not None:
             if user.is_active:
                 login(request, user)
                 messages.success(request, f'Bienvenido, {user.username}.')
+                # Volver a la página que pidió @login_required (?next=), solo si es de este mismo sitio
+                destino = request.GET.get('next', '')
+                if url_has_allowed_host_and_scheme(destino, allowed_hosts={request.get_host()},
+                                                   require_https=request.is_secure()):
+                    return redirect(destino)
                 return redirect('ferreteria:home')
             else:
                 context['message'] = 'El usuario ha sido desactivado en el sistema.'
@@ -24,10 +34,11 @@ def log_in(request):
     return render(request, 'ferreteria/login.html', context)
 
 
-@login_required
 def log_out(request):
-    logout(request)
-    messages.info(request, 'Sesión cerrada correctamente.')
+    # Sin @login_required: así /logout/ sin sesión no genera un ?next=/logout/ que cerraría la sesión al ingresar
+    if request.user.is_authenticated:
+        logout(request)
+        messages.info(request, 'Sesión cerrada correctamente.')
     return redirect('ferreteria:log-in')
 
 
