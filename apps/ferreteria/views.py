@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.db.models import Q, Sum, Count
+from django.db.models import Q, Sum, Count, ProtectedError
 from .models import Producto, Categoria
 from .forms import ProductoForm, LoginForm, CategoriaForm
 
@@ -118,4 +118,43 @@ def categoria_list(request):
     return render(request, 'ferreteria/category/category_list.html', {
         'categorias': categorias,
         'form': form
+    })
+
+
+@login_required
+def categoria_detail(request, pk):
+    categoria = get_object_or_404(Categoria.objects.annotate(total_prod=Count('productos')), pk=pk)
+    return render(request, 'ferreteria/category/category_detail.html', {
+        'categoria': categoria,
+        'productos': categoria.productos.all(),
+    })
+
+
+@login_required
+def categoria_update(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    form = CategoriaForm(request.POST or None, instance=categoria)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        return redirect(categoria.get_detail_url())
+    return render(request, 'ferreteria/category/category_form.html', {
+        'form': form,
+        'categoria': categoria,
+    })
+
+
+@login_required
+def categoria_delete(request, pk):
+    categoria = get_object_or_404(Categoria.objects.annotate(total_prod=Count('productos')), pk=pk)
+    error = None
+    if request.method == 'POST':
+        try:
+            categoria.delete()
+            return redirect('ferreteria:category-list')
+        except ProtectedError:
+            # on_delete=PROTECT: una familia con insumos no se puede borrar
+            error = 'No se puede eliminar: la familia todavía tiene insumos asociados.'
+    return render(request, 'ferreteria/category/category_confirm_delete.html', {
+        'categoria': categoria,
+        'error': error,
     })

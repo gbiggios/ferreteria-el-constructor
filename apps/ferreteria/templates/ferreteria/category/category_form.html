@@ -1,0 +1,30 @@
+{% extends 'ferreteria/fragments/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Editar {{ categoria.nombre }} - El Constructor{% endblock %}
+
+{% block main-content %}
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{% url 'ferreteria:category-list' %}">Familias</a> › <a href="{{ categoria.get_detail_url }}">{{ categoria.nombre }}</a> › Editar</div>
+    <h1 class="titulo-pagina">Editar familia</h1>
+    <p class="bajada">Corrige el nombre o la descripción. Los insumos asociados se mantienen.</p>
+
+    <div class="tarjeta" style="max-width: 560px;">
+        <form method="post">
+            {% csrf_token %}
+            <div class="campo{% if form.nombre.errors %} campo-error{% endif %}">
+                <label for="{{ form.nombre.id_for_label }}">Nombre</label>
+                {% render_field form.nombre %}
+                {% for error in form.nombre.errors %}<span class="error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="campo" style="margin-top: 14px;">
+                <label for="{{ form.descripcion.id_for_label }}">Descripción breve</label>
+                {% render_field form.descripcion %}
+                {% for error in form.descripcion.errors %}<span class="error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="pie-formulario">
+                <a class="boton boton-suave" href="{{ categoria.get_detail_url }}">Cancelar</a>
+                <button class="boton boton-rojo" type="submit">Guardar familia</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

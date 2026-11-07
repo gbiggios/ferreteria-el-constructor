@@ -47,7 +47,7 @@
                 {% with url=request.resolver_match.url_name %}
                     <a href="{% url 'ferreteria:home' %}" class="{% if url == 'home' %}activo{% endif %}">Catálogo y stock</a>
                     <a href="{% url 'ferreteria:producto-create' %}" class="{% if url == 'producto-create' %}activo{% endif %}">Registrar insumo</a>
-                    <a href="{% url 'ferreteria:category-list' %}" class="{% if url == 'category-list' %}activo{% endif %}">Familias</a>
+                    <a href="{% url 'ferreteria:category-list' %}" class="{% if 'category' in url %}activo{% endif %}">Familias</a>
                 {% endwith %}
             </div>
         </nav>

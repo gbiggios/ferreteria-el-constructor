@@ -1,0 +1,38 @@
+{% extends 'ferreteria/fragments/base.html' %}
+
+{% block title %}Eliminar familia - El Constructor{% endblock %}
+
+{% block main-content %}
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{% url 'ferreteria:category-list' %}">Familias</a> › <a href="{{ categoria.get_detail_url }}">{{ categoria.nombre }}</a> › Eliminar</div>
+
+    <div class="tarjeta confirmacion" style="margin-top: 18px;">
+        <span class="confirmacion-icono">{% include 'ferreteria/fragments/icono.html' with nombre='alerta' %}</span>
+
+        {% if categoria.total_prod %}
+            {# on_delete=PROTECT: no se ofrece borrar una familia que todavía tiene insumos #}
+            <h1 class="titulo-pagina" style="font-size: 24px;">No se puede eliminar esta familia</h1>
+            <div class="alerta" style="margin-top: 14px;">
+                {% if error %}{{ error }} {% endif %}La familia tiene {{ categoria.total_prod }} insumo{{ categoria.total_prod|pluralize }} asociado{{ categoria.total_prod|pluralize }}.
+                Muévelos a otra familia o dalos de baja antes de eliminarla.
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <a class="boton boton-borde" href="{{ categoria.get_detail_url }}">Volver a la familia</a>
+                <a class="boton boton-rojo" href="{% url 'ferreteria:home' %}?categoria={{ categoria.id }}">Ver sus insumos</a>
+            </div>
+        {% else %}
+            <h1 class="titulo-pagina" style="font-size: 24px;">¿Eliminar esta familia?</h1>
+            <p class="bajada" style="margin-bottom: 0;">No tiene insumos asociados. Esta acción no se puede deshacer.</p>
+
+            <div class="resumen">
+                <div><span>Nombre</span><strong>{{ categoria.nombre }}</strong></div>
+                <div><span>Descripción</span><strong>{{ categoria.descripcion|default:"Sin descripción" }}</strong></div>
+            </div>
+
+            <form method="post" style="display: flex; gap: 10px; justify-content: center;">
+                {% csrf_token %}
+                <a class="boton boton-borde" href="{{ categoria.get_detail_url }}">Cancelar</a>
+                <button class="boton boton-rojo" type="submit">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}Sí, eliminar</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
