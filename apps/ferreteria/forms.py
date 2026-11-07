@@ -18,7 +18,7 @@ class ProductoForm(forms.ModelForm):
             'disponible'
         ]
         widgets = {
-            'descripcion': forms.Textarea(attrs={'rows': 3, 'class': 'materialize-textarea'}),
+            'descripcion': forms.Textarea(attrs={'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):
