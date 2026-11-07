@@ -6,7 +6,7 @@
     <title>{% block title %}El Constructor - Inventario{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=3">
 </head>
 <body>
     <div class="barra-top">
@@ -43,11 +43,11 @@
     {% if request.user.is_authenticated %}
         <nav class="menu">
             <div class="contenedor">
-                <a class="menu-familias" href="{% url 'ferreteria:category-list' %}">{% include 'ferreteria/fragments/icono.html' with nombre='menu' %}Todas las familias</a>
+                <a class="menu-categorias" href="{% url 'ferreteria:category-list' %}">{% include 'ferreteria/fragments/icono.html' with nombre='menu' %}Todas las categorías</a>
                 {% with url=request.resolver_match.url_name %}
                     <a href="{% url 'ferreteria:home' %}" class="{% if url == 'home' %}activo{% endif %}">Catálogo y stock</a>
                     <a href="{% url 'ferreteria:producto-create' %}" class="{% if url == 'producto-create' %}activo{% endif %}">Registrar insumo</a>
-                    <a href="{% url 'ferreteria:category-list' %}" class="{% if 'category' in url %}activo{% endif %}">Familias</a>
+                    <a href="{% url 'ferreteria:category-list' %}" class="{% if 'category' in url %}activo{% endif %}">Categorías</a>
                 {% endwith %}
             </div>
         </nav>

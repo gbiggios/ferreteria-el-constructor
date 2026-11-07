@@ -11,7 +11,7 @@
     <div class="columnas-7-5">
         <div class="tarjeta">
             {% if producto.imagen %}<img class="foto-producto" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">{% endif %}
-            <span class="etiqueta-familia">{{ producto.categoria.nombre }}</span>
+            <span class="etiqueta-categoria">{{ producto.categoria.nombre }}</span>
             <div class="ficha-datos">
                 <div><div class="dato-etiqueta">Ubicación en bodega</div><div class="dato-valor">{{ producto.ubicacion_bodega }}</div></div>
                 <div><div class="dato-etiqueta">Venta</div><div class="dato-valor">{% if producto.disponible %}Habilitado para mesón{% else %}Deshabilitado{% endif %}</div></div>

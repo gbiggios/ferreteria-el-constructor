@@ -68,8 +68,8 @@ main { flex: 1 0 auto; }
 .menu .contenedor { display: flex; gap: 34px; height: 46px; align-items: center; font-size: 14px; font-weight: 500; }
 .menu a { color: var(--texto); }
 .menu a:hover, .menu a.activo { color: var(--rojo); }
-.menu .menu-familias { font-weight: 700; color: var(--tinta); display: flex; align-items: center; gap: 6px; }
-.menu .menu-familias svg { width: 16px; height: 16px; }
+.menu .menu-categorias { font-weight: 700; color: var(--tinta); display: flex; align-items: center; gap: 6px; }
+.menu .menu-categorias svg { width: 16px; height: 16px; }
 
 /* Encabezado de página */
 .migas { font-size: 13px; color: var(--gris); margin: 22px 0 10px; }
@@ -97,12 +97,12 @@ main { flex: 1 0 auto; }
 .tono-naranjo { background: #ffedd5; color: var(--naranjo); }
 .tono-rojo { background: var(--rojo-suave); color: var(--rojo); }
 
-/* Pastillas de familia */
+/* Pastillas de categoría */
 .pastillas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
 .pastilla { border: 1px solid var(--borde); background: var(--blanco); border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 500; }
 .pastilla:hover { border-color: var(--tinta); }
 .pastilla.activa { background: var(--tinta); color: var(--blanco); border-color: var(--tinta); }
-.etiqueta-familia { display: inline-block; background: #f1f5f9; border-radius: 999px; padding: 3px 10px; font-size: 12.5px; color: var(--texto); }
+.etiqueta-categoria { display: inline-block; background: #f1f5f9; border-radius: 999px; padding: 3px 10px; font-size: 12.5px; color: var(--texto); }
 
 /* Tabla */
 .tabla-cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }

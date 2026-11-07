@@ -4,14 +4,14 @@
 {% block title %}{{ categoria.nombre }} - El Constructor{% endblock %}
 
 {% block main-content %}
-    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{% url 'ferreteria:category-list' %}">Familias</a> › {{ categoria.nombre }}</div>
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{% url 'ferreteria:category-list' %}">Categorías</a> › {{ categoria.nombre }}</div>
     <h1 class="titulo-pagina">{{ categoria.nombre }}</h1>
     <p class="bajada">{{ categoria.descripcion|default:"Sin descripción" }}</p>
 
     <div class="columnas-7-5">
         <div class="tarjeta">
             <div class="tabla-cabecera">
-                <h2>Insumos de la familia</h2>
+                <h2>Insumos de la categoría</h2>
                 <a class="pastilla" href="{% url 'ferreteria:home' %}?categoria={{ categoria.id }}">Ver en el catálogo</a>
             </div>
             <table class="tabla">
@@ -29,7 +29,7 @@
                             <td class="num">{{ p.precio|clp }}</td>
                         </tr>
                     {% empty %}
-                        <tr><td colspan="3" class="tabla-vacia">Esta familia no tiene insumos registrados.</td></tr>
+                        <tr><td colspan="3" class="tabla-vacia">Esta categoría no tiene insumos registrados.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -43,8 +43,8 @@
                 <div><div class="dato-etiqueta">Fecha de registro</div><div class="dato-valor">{{ categoria.created|date:"d/m/Y H:i" }}</div></div>
                 <div><div class="dato-etiqueta">Última actualización</div><div class="dato-valor">{{ categoria.updated|date:"d/m/Y H:i" }}</div></div>
             </div>
-            <a class="boton boton-rojo boton-ancho" href="{{ categoria.get_edit_url }}">{% include 'ferreteria/fragments/icono.html' with nombre='editar' %}Editar familia</a>
-            <a class="boton boton-borde boton-ancho" href="{{ categoria.get_delete_url }}" style="margin-top: 10px;">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}Eliminar familia</a>
+            <a class="boton boton-rojo boton-ancho" href="{{ categoria.get_edit_url }}">{% include 'ferreteria/fragments/icono.html' with nombre='editar' %}Editar categoría</a>
+            <a class="boton boton-borde boton-ancho" href="{{ categoria.get_delete_url }}" style="margin-top: 10px;">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}Eliminar categoría</a>
         </div>
     </div>
 {% endblock %}

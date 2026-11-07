@@ -4,8 +4,8 @@
 {% block title %}Editar {{ categoria.nombre }} - El Constructor{% endblock %}
 
 {% block main-content %}
-    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{% url 'ferreteria:category-list' %}">Familias</a> › <a href="{{ categoria.get_detail_url }}">{{ categoria.nombre }}</a> › Editar</div>
-    <h1 class="titulo-pagina">Editar familia</h1>
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{% url 'ferreteria:category-list' %}">Categorías</a> › <a href="{{ categoria.get_detail_url }}">{{ categoria.nombre }}</a> › Editar</div>
+    <h1 class="titulo-pagina">Editar categoría</h1>
     <p class="bajada">Corrige el nombre o la descripción. Los insumos asociados se mantienen.</p>
 
     <div class="tarjeta" style="max-width: 560px;">
@@ -23,7 +23,7 @@
             </div>
             <div class="pie-formulario">
                 <a class="boton boton-suave" href="{{ categoria.get_detail_url }}">Cancelar</a>
-                <button class="boton boton-rojo" type="submit">Guardar familia</button>
+                <button class="boton boton-rojo" type="submit">Guardar categoría</button>
             </div>
         </form>
     </div>

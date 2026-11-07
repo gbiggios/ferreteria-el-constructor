@@ -80,7 +80,7 @@ def producto_create(request):
     return render(request, 'ferreteria/form.html', {
         'form': form,
         'titulo': 'Registrar insumo',
-        'subtitulo': 'Ingresa el SKU, la familia, el precio y el stock inicial del producto.'
+        'subtitulo': 'Ingresa el SKU, la categoría, el precio y el stock inicial del producto.'
     })
 
 
@@ -152,8 +152,8 @@ def categoria_delete(request, pk):
             categoria.delete()
             return redirect('ferreteria:category-list')
         except ProtectedError:
-            # on_delete=PROTECT: una familia con insumos no se puede borrar
-            error = 'No se puede eliminar: la familia todavía tiene insumos asociados.'
+            # on_delete=PROTECT: una categoría con insumos no se puede borrar
+            error = 'No se puede eliminar: la categoría todavía tiene insumos asociados.'
     return render(request, 'ferreteria/category/category_confirm_delete.html', {
         'categoria': categoria,
         'error': error,

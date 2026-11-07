@@ -1,18 +1,18 @@
 {% extends 'ferreteria/fragments/base.html' %}
 {% load widget_tweaks %}
 
-{% block title %}Familias - El Constructor{% endblock %}
+{% block title %}Categorías - El Constructor{% endblock %}
 
 {% block main-content %}
-    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › Familias</div>
-    <h1 class="titulo-pagina">Familias de productos</h1>
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › Categorías</div>
+    <h1 class="titulo-pagina">Categorías de productos</h1>
     <p class="bajada">Clasificación del catálogo para buscar y filtrar insumos en el mesón.</p>
 
     <div class="columnas-7-5">
         <div class="tarjeta">
             <table class="tabla">
                 <thead>
-                    <tr><th>Familia</th><th>Descripción</th><th class="num">Insumos</th><th class="num">Acciones</th></tr>
+                    <tr><th>Categoría</th><th>Descripción</th><th class="num">Insumos</th><th class="num">Acciones</th></tr>
                 </thead>
                 <tbody>
                     {% for c in categorias %}
@@ -22,21 +22,21 @@
                             <td class="num"><a class="pastilla" href="{% url 'ferreteria:home' %}?categoria={{ c.id }}">{{ c.total_prod }} insumo{{ c.total_prod|pluralize }}</a></td>
                             <td>
                                 <div class="acciones">
-                                    <a class="accion" href="{{ c.get_detail_url }}" title="Ver familia">{% include 'ferreteria/fragments/icono.html' with nombre='ver' %}</a>
-                                    <a class="accion" href="{{ c.get_edit_url }}" title="Editar familia">{% include 'ferreteria/fragments/icono.html' with nombre='editar' %}</a>
-                                    <a class="accion accion-peligro" href="{{ c.get_delete_url }}" title="Eliminar familia">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}</a>
+                                    <a class="accion" href="{{ c.get_detail_url }}" title="Ver categoría">{% include 'ferreteria/fragments/icono.html' with nombre='ver' %}</a>
+                                    <a class="accion" href="{{ c.get_edit_url }}" title="Editar categoría">{% include 'ferreteria/fragments/icono.html' with nombre='editar' %}</a>
+                                    <a class="accion accion-peligro" href="{{ c.get_delete_url }}" title="Eliminar categoría">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}</a>
                                 </div>
                             </td>
                         </tr>
                     {% empty %}
-                        <tr><td colspan="4" class="tabla-vacia">No hay familias registradas.</td></tr>
+                        <tr><td colspan="4" class="tabla-vacia">No hay categorías registradas.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
 
         <div class="tarjeta">
-            <h2>Nueva familia</h2>
+            <h2>Nueva categoría</h2>
             <p class="nota">El nombre no puede repetirse.</p>
             <form method="post">
                 {% csrf_token %}
@@ -49,7 +49,7 @@
                     <label for="id_cat_desc">Descripción breve</label>
                     {% render_field form.descripcion id="id_cat_desc" %}
                 </div>
-                <button class="boton boton-rojo boton-ancho" type="submit" style="margin-top: 18px;">Registrar familia</button>
+                <button class="boton boton-rojo boton-ancho" type="submit" style="margin-top: 18px;">Registrar categoría</button>
             </form>
         </div>
     </div>
