@@ -11,6 +11,6 @@ urlpatterns = [
     path('', include('apps.ferreteria.urls')),
 ]
 
+# En desarrollo Django sirve las imágenes subidas (media/). Los estáticos los sirve runserver por sí solo.
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

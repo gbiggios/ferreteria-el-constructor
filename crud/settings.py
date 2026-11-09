@@ -22,7 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize',
     'widget_tweaks',
     'apps.ferreteria',
 ]
@@ -42,7 +41,7 @@ ROOT_URLCONF = 'crud.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [],  # las plantillas viven en apps/ferreteria/templates/ (APP_DIRS)
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,10 +76,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+# Los estáticos viven en apps/ferreteria/static/; los encuentra AppDirectoriesFinder (buscador por defecto de Django)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

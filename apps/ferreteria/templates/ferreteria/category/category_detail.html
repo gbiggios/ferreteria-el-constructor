@@ -1,0 +1,50 @@
+{% extends 'ferreteria/fragments/base.html' %}
+{% load ferreteria_extras %}
+
+{% block title %}{{ categoria.nombre }} - El Constructor{% endblock %}
+
+{% block main-content %}
+    <div class="migas"><a href="{% url 'ferreteria:home' %}">Inicio</a> › <a href="{% url 'ferreteria:category-list' %}">Categorías</a> › {{ categoria.nombre }}</div>
+    <h1 class="titulo-pagina">{{ categoria.nombre }}</h1>
+    <p class="bajada">{{ categoria.descripcion|default:"Sin descripción" }}</p>
+
+    <div class="columnas-7-5">
+        <div class="tarjeta">
+            <div class="tabla-cabecera">
+                <h2>Insumos de la categoría</h2>
+                <a class="pastilla" href="{% url 'ferreteria:home' %}?categoria={{ categoria.id }}">Ver en el catálogo</a>
+            </div>
+            <table class="tabla">
+                <thead>
+                    <tr><th>Producto</th><th class="num">Stock</th><th class="num">Precio</th></tr>
+                </thead>
+                <tbody>
+                    {% for p in productos %}
+                        <tr>
+                            <td>
+                                <div class="producto-nombre"><a href="{{ p.get_detail_url }}">{{ p.nombre }}</a></div>
+                                <div class="producto-meta">{{ p.codigo }} · {{ p.unidad_medida }}</div>
+                            </td>
+                            <td class="num">{% include 'ferreteria/fragments/estado_stock.html' with producto=p con_cantidad=True %}</td>
+                            <td class="num">{{ p.precio|clp }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3" class="tabla-vacia">Esta categoría no tiene insumos registrados.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="tarjeta">
+            <div class="dato-etiqueta">Insumos asociados</div>
+            <div class="stock-grande">{{ categoria.total_prod }}</div>
+            <hr class="separador">
+            <div class="ficha-datos">
+                <div><div class="dato-etiqueta">Fecha de registro</div><div class="dato-valor">{{ categoria.created|date:"d/m/Y H:i" }}</div></div>
+                <div><div class="dato-etiqueta">Última actualización</div><div class="dato-valor">{{ categoria.updated|date:"d/m/Y H:i" }}</div></div>
+            </div>
+            <a class="boton boton-rojo boton-ancho" href="{{ categoria.get_edit_url }}">{% include 'ferreteria/fragments/icono.html' with nombre='editar' %}Editar categoría</a>
+            <a class="boton boton-borde boton-ancho" href="{{ categoria.get_delete_url }}" style="margin-top: 10px;">{% include 'ferreteria/fragments/icono.html' with nombre='borrar' %}Eliminar categoría</a>
+        </div>
+    </div>
+{% endblock %}

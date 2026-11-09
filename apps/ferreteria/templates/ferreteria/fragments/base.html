@@ -6,14 +6,17 @@
     <title>{% block title %}El Constructor - Inventario{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'ferreteria/css/el-constructor.css' %}?v=7">
 </head>
 <body>
     <div class="barra-top">
         <div class="contenedor">
             <span>Sistema interno de inventario · Mesón y bodega</span>
             {% if request.user.is_authenticated %}
-                <span><a href="/admin/">Panel de administración</a> · <a href="{% url 'ferreteria:log-out' %}">Cerrar sesión</a></span>
+                <span>
+                    {% if request.user.is_staff %}<a href="{% url 'admin:index' %}">Panel de administración</a> · {% endif %}
+                    <form class="form-en-linea" method="post" action="{% url 'ferreteria:log-out' %}">{% csrf_token %}<button type="submit" class="boton-enlace">Cerrar sesión</button></form>
+                </span>
             {% else %}
                 <span>Lunes a sábado, 9:00 a 18:00</span>
             {% endif %}
@@ -43,14 +46,27 @@
     {% if request.user.is_authenticated %}
         <nav class="menu">
             <div class="contenedor">
-                <a class="menu-familias" href="{% url 'ferreteria:category-list' %}">{% include 'ferreteria/fragments/icono.html' with nombre='menu' %}Todas las familias</a>
                 {% with url=request.resolver_match.url_name %}
+                    <a class="menu-categorias{% if 'category' in url %} activo{% endif %}" href="{% url 'ferreteria:category-list' %}">{% include 'ferreteria/fragments/icono.html' with nombre='menu' %}Todas las categorías</a>
                     <a href="{% url 'ferreteria:home' %}" class="{% if url == 'home' %}activo{% endif %}">Catálogo y stock</a>
                     <a href="{% url 'ferreteria:producto-create' %}" class="{% if url == 'producto-create' %}activo{% endif %}">Registrar insumo</a>
-                    <a href="{% url 'ferreteria:category-list' %}" class="{% if url == 'category-list' %}activo{% endif %}">Familias</a>
                 {% endwith %}
             </div>
         </nav>
+    {% endif %}
+
+    {% if messages %}
+        {# Mensajes del framework messages como avisos flotantes (toast). Éxito/info se cierran a los 5 s; los errores, solo con la X #}
+        <div class="mensajes">
+            {% for message in messages %}
+                <div class="mensaje mensaje-{{ message.tags }}" role="{% if 'error' in message.tags %}alert{% else %}status{% endif %}">
+                    {% if 'error' in message.tags %}{% include 'ferreteria/fragments/icono.html' with nombre='alerta' %}{% else %}{% include 'ferreteria/fragments/icono.html' with nombre='check' %}{% endif %}
+                    <span class="mensaje-texto">{{ message }}</span>
+                    <button type="button" class="mensaje-cerrar" aria-label="Cerrar mensaje">&times;</button>
+                    {% if 'error' not in message.tags %}<span class="mensaje-tiempo" aria-hidden="true"></span>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 
     <main>
@@ -65,5 +81,7 @@
             <div class="derecha">Sistema de inventario · Incremento 1<br>Grupo 6 · APTC106 Taller de Desarrollo Web y Móvil</div>
         </div>
     </footer>
+
+    <script src="{% static 'ferreteria/js/mensajes.js' %}?v=1" defer></script>
 </body>
 </html>

@@ -35,7 +35,10 @@ main { flex: 1 0 auto; }
 /* Barra superior */
 .barra-top { background: var(--tinta); color: #e2e8f0; font-size: 13px; }
 .barra-top .contenedor { display: flex; justify-content: space-between; align-items: center; height: 34px; }
-.barra-top a:hover { color: var(--blanco); }
+.barra-top a:hover, .barra-top .boton-enlace:hover { color: var(--blanco); }
+/* Botón con aspecto de enlace (cerrar sesión va por POST, así que es un formulario y no un <a>) */
+.form-en-linea { display: inline; margin: 0; }
+.boton-enlace { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; }
 
 /* Cabecera */
 .cabecera { background: var(--blanco); border-bottom: 1px solid var(--borde); }
@@ -68,8 +71,8 @@ main { flex: 1 0 auto; }
 .menu .contenedor { display: flex; gap: 34px; height: 46px; align-items: center; font-size: 14px; font-weight: 500; }
 .menu a { color: var(--texto); }
 .menu a:hover, .menu a.activo { color: var(--rojo); }
-.menu .menu-familias { font-weight: 700; color: var(--tinta); display: flex; align-items: center; gap: 6px; }
-.menu .menu-familias svg { width: 16px; height: 16px; }
+.menu .menu-categorias { font-weight: 700; color: var(--tinta); display: flex; align-items: center; gap: 6px; }
+.menu .menu-categorias svg { width: 16px; height: 16px; }
 
 /* Encabezado de página */
 .migas { font-size: 13px; color: var(--gris); margin: 22px 0 10px; }
@@ -97,12 +100,12 @@ main { flex: 1 0 auto; }
 .tono-naranjo { background: #ffedd5; color: var(--naranjo); }
 .tono-rojo { background: var(--rojo-suave); color: var(--rojo); }
 
-/* Pastillas de familia */
+/* Pastillas de categoría */
 .pastillas { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
 .pastilla { border: 1px solid var(--borde); background: var(--blanco); border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 500; }
 .pastilla:hover { border-color: var(--tinta); }
 .pastilla.activa { background: var(--tinta); color: var(--blanco); border-color: var(--tinta); }
-.etiqueta-familia { display: inline-block; background: #f1f5f9; border-radius: 999px; padding: 3px 10px; font-size: 12.5px; color: var(--texto); }
+.etiqueta-categoria { display: inline-block; background: #f1f5f9; border-radius: 999px; padding: 3px 10px; font-size: 12.5px; color: var(--texto); }
 
 /* Tabla */
 .tabla-cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -125,7 +128,7 @@ main { flex: 1 0 auto; }
 /* Disponibilidad */
 .stock { font-weight: 600; white-space: nowrap; }
 .stock::before { content: '●'; margin-right: 6px; }
-.stock-ok { color: var(--verde); }
+.stock-disponible { color: var(--verde); }
 .stock-critico { color: var(--naranjo); }
 .stock-agotado { color: var(--rojo); }
 
@@ -169,6 +172,28 @@ main { flex: 1 0 auto; }
 .error { color: var(--rojo); font-size: 12.5px; }
 .ayuda { color: var(--gris); font-size: 12.5px; }
 .alerta { background: var(--rojo-suave); color: var(--rojo-oscuro); border-radius: 6px; padding: 10px 14px; font-size: 14px; margin-bottom: 16px; }
+
+/* Mensajes de feedback (django.contrib.messages) como avisos flotantes. El cierre lo maneja js/mensajes.js */
+.mensajes { position: fixed; top: 16px; right: 16px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; width: min(380px, calc(100vw - 32px)); }
+.mensaje { position: relative; overflow: hidden; display: flex; align-items: flex-start; gap: 10px; border: 1px solid; border-radius: var(--radio); padding: 12px 12px 15px 14px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); animation: mensaje-entrada 0.25s ease-out; }
+.mensaje svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+.mensaje-texto { flex: 1; }
+.mensaje-success { background: #dcfce7; border-color: #bbf7d0; color: var(--verde); }
+.mensaje-error { background: var(--rojo-suave); border-color: #fecaca; color: var(--rojo-oscuro); }
+.mensaje-info { background: #f1f5f9; border-color: var(--borde); color: var(--texto); }
+.mensaje-cerrar { background: none; border: 0; padding: 0 4px; color: inherit; font-size: 22px; line-height: 18px; cursor: pointer; opacity: 0.6; }
+.mensaje-cerrar:hover, .mensaje-cerrar:focus-visible { opacity: 1; }
+.mensaje-cerrar:focus-visible { outline: 2px solid currentColor; border-radius: 4px; }
+/* Barra de tiempo: al terminar (5 s) el JS cierra el aviso; con el mouse encima se pausa */
+.mensaje-tiempo { position: absolute; left: 0; bottom: 0; width: 100%; height: 3px; background: currentColor; opacity: 0.35; transform-origin: left; animation: mensaje-tiempo 5s linear forwards; }
+.mensaje:hover .mensaje-tiempo, .mensaje:focus-within .mensaje-tiempo { animation-play-state: paused; }
+.mensaje-saliendo { animation: mensaje-salida 0.2s ease-in forwards; }
+@keyframes mensaje-entrada { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes mensaje-salida { to { opacity: 0; transform: translateX(16px); } }
+@keyframes mensaje-tiempo { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) {
+    .mensaje, .mensaje-saliendo { animation-duration: 1ms; }
+}
 .pie-formulario { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--borde); }
 
 /* Login */

@@ -18,12 +18,12 @@ class ProductoForm(forms.ModelForm):
             'disponible'
         ]
         widgets = {
-            'descripcion': forms.Textarea(attrs={'rows': 3, 'class': 'materialize-textarea'}),
+            'descripcion': forms.Textarea(attrs={'rows': 3}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['categoria'].empty_label = 'Seleccione una familia'
+        self.fields['categoria'].empty_label = 'Seleccione una categoría'
 
 
 class CategoriaForm(forms.ModelForm):
